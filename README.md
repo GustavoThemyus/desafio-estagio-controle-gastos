@@ -5,9 +5,8 @@ Projeto do desafio técnico: back-end em .NET/C# + front-end em React/TypeScript
 ## Estrutura
 
 ```
-desafio-estagio/
-├── backend/ControleGastos.Api/   -> API em C# (.NET 8)
-└── frontend/                     -> App em React + TypeScript (Vite)
+backend/ControleGastos.Api/  = API em C# (.NET 8)
+frontend/                    = App em React + TypeScript (Vite)
 ```
 
 ## Como rodar
