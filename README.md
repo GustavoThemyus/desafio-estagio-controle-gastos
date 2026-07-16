@@ -18,7 +18,7 @@ cd backend/ControleGastos.Api
 dotnet run
 ```
 
-A API sobe em `http://localhost:5000`. Na primeira execução, ela cria uma pasta
+A API sobe em `http://localhost:5000`. Na primeira execução ela cria uma pasta
 `data/` com um arquivo `dados.json` é ali que os dados ficam salvos entre uma
 execução e outra (é o "banco de dados" desse projeto)
 
