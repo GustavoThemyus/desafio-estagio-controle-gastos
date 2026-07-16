@@ -1,0 +1,13 @@
+# Backend (.NET)
+backend/**/bin/
+backend/**/obj/
+backend/**/data/dados.json
+
+# Frontend (Node/Vite)
+frontend/node_modules/
+frontend/dist/
+
+# Editores/SO
+.vscode/
+.idea/
+.DS_Store
