@@ -6,14 +6,13 @@ import type {
   ErroResponse,
 } from "./types";
 
-// Endereço onde o back-end .NET está rodando (definido no launchSettings.json do back-end).
-// Se você mudar a porta lá, precisa mudar aqui também.
+// Porta definida em backend/ControleGastos.Api/Properties/launchSettings.json
 const BASE_URL = "http://localhost:5000";
 
 /**
- * Função auxiliar central: faz o fetch, e se a resposta não for "ok" (status 2xx),
- * lê a mensagem de erro que o back-end mandou e lança um Error com ela.
- * Assim, toda tela pode simplesmente usar try/catch e mostrar `error.message`.
+ * Wrapper central de fetch: normaliza tratamento de erro (lê a mensagem
+ * enviada pelo back-end em ErroResponse) e serialização de resposta,
+ * permitindo que cada chamada da API use try/catch
  */
 async function requisitar<T>(caminho: string, opcoes?: RequestInit): Promise<T> {
   const resposta = await fetch(`${BASE_URL}${caminho}`, {
@@ -32,7 +31,7 @@ async function requisitar<T>(caminho: string, opcoes?: RequestInit): Promise<T> 
     throw new Error(mensagem);
   }
 
-  // Requisições como DELETE retornam 204 No Content, sem corpo para converter em JSON.
+  // Requisições como DELETE retornam 204 No Content, sem corpo pra converter em JSON
   if (resposta.status === 204) {
     return undefined as T;
   }

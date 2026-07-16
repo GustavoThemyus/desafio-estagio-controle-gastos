@@ -6,14 +6,14 @@ interface GraficoPizzaProps {
 }
 
 /**
- * Gráfico de pizza (na verdade um "donut", pizza com buraco no meio) que
- * mostra a proporção entre receitas e despesas de todo o sistema.
- *
- * Não usei nenhuma biblioteca de gráficos pra isso — com só 2 fatias,
- * um `conic-gradient` em CSS resolve tudo sozinho, sem precisar calcular
- * ângulos de SVG na mão nem carregar uma lib externa.
+ * Gráfico de pizza com a proporção entre receitas e despesas do
+ * sistema. Implementado com `conic-gradient` em CSS em vez de biblioteca
+ * de gráficos ou SVG manual, suficiente pra duas fatias
  */
-export function GraficoPizza({ totalReceitas, totalDespesas }: GraficoPizzaProps) {
+export function GraficoPizza({
+  totalReceitas,
+  totalDespesas,
+}: GraficoPizzaProps) {
   const total = totalReceitas + totalDespesas;
   const saldo = totalReceitas - totalDespesas;
 
@@ -28,7 +28,7 @@ export function GraficoPizza({ totalReceitas, totalDespesas }: GraficoPizzaProps
     );
   }
 
-  // Percentual de receita dentro do total (despesa é o "resto", 100 - isso).
+  // Percentual de receita no total (despesa é o complemento: 100 - isso)
   const percentualReceita = (totalReceitas / total) * 100;
 
   return (
@@ -52,11 +52,13 @@ export function GraficoPizza({ totalReceitas, totalDespesas }: GraficoPizzaProps
         <ul className="grafico-legenda">
           <li>
             <span className="grafico-legenda-cor receita" />
-            Receitas — {formatarMoeda(totalReceitas)} ({percentualReceita.toFixed(0)}%)
+            Receitas — {formatarMoeda(totalReceitas)} (
+            {percentualReceita.toFixed(0)}%)
           </li>
           <li>
             <span className="grafico-legenda-cor despesa" />
-            Despesas — {formatarMoeda(totalDespesas)} ({(100 - percentualReceita).toFixed(0)}%)
+            Despesas — {formatarMoeda(totalDespesas)} (
+            {(100 - percentualReceita).toFixed(0)}%)
           </li>
         </ul>
       </div>

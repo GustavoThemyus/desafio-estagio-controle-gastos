@@ -1,19 +1,10 @@
 /* ============================================================================
-   TEMA (claro/escuro) + PALETA DE CORES
-   Tudo baseado em variáveis CSS. Cada tela só usa essas variáveis, nunca uma
-   cor "chumbada" direto — assim trocar o tema, ou até a paleta inteira no
-   futuro, é uma mudança em um único lugar.
-
-   Critério usado para escolher onde cada cor entra:
-   - --accent (azul/índigo): ações principais e destaque de navegação
-     (botão de adicionar, aba selecionada). É a cor que representa "a marca"
-     do app, então fica reservada só para isso.
-   - --receita / --despesa (verde/vermelho): SOMENTE para valores financeiros
-     (receita, despesa, saldo) e para ações destrutivas (remover). Não usamos
-     essas cores em mais nada, pra não perderem o significado.
-   - --fg / --bg / --borda (neutros): todo o resto — textos comuns, bordas
-     de inputs, tabelas. Cor demais em elementos neutros cansa a vista e
-     distrai do que realmente importa: os números.
+   TEMA (claro/escuro) + PALETA DE COREs
+   Cores centralizadas em variáveis CSS, sem valores fixos espalhados no
+   restante do arquivo. Critério de uso:
+   - --accent: ações principais e navegação ativa
+   - --receita / --despesa: valores financeiros e ações destrutivas
+   - --fg / --bg / --borda: neutros, pra todo o resto
    ============================================================================ */
 
 :root[data-theme="light"] {
@@ -32,7 +23,7 @@
   --despesa-bg: #fee2e2;
   --despesa-hover: color-mix(in srgb, var(--despesa) 60%, black 40%);
 
-  /* Usada só para calcular o hover do botão de tema: no claro, escurece. */
+  /* Usada só pra calcular o hover do botão de tema: no claro, escurece */
   --contraste-hover: black;
 
   /* Seta customizada do dropdown, na cor neutra "suave" deste tema */
@@ -55,10 +46,10 @@
   --despesa-bg: #450a0a;
   --despesa-hover: color-mix(in srgb, var(--despesa) 60%, black 40%);
 
-  /* Usada só para calcular o hover do botão de tema: no escuro, clareia. */
+  /* Usada só pra calcular o hover do botão de tema: no escuro, clareia */
   --contraste-hover: white;
 
-  /* Seta customizada do dropdown, na cor neutra "suave" deste tema */
+  /* Seta customizada do dropdown, na cor neutra "suave" desse tema */
   --seta-select: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23a3a8b5' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 
@@ -68,7 +59,12 @@
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Arial,
+    sans-serif;
   background: var(--bg);
   color: var(--fg);
 }
@@ -91,7 +87,7 @@ h1 {
 }
 
 /* Botão de tema: neutro de propósito. Ele não é uma "ação principal" do
-   sistema (não mexe em dados), então não merece a cor de destaque. */
+   sistema (não mexe em dados), então não merece a cor de destaque */
 .botao-tema {
   border: 1px solid var(--borda);
   background: var(--bg-elevado);
@@ -103,9 +99,8 @@ h1 {
   white-space: nowrap;
 }
 
-/* Hover neutro: parte da própria cor de fundo do botão (--bg-elevado) e só
-   clareia (tema escuro) ou escurece (tema claro) 15%, usando --contraste-hover
-   que já muda de direção sozinho conforme o tema ativo. */
+/* Hover parte da própria cor de fundo (--bg-elevado), clareando ou
+   escurecendo conforme --contraste-hover (varia por tema) */
 .botao-tema:hover:not(:disabled) {
   background: color-mix(in srgb, var(--bg-elevado) 85%, var(--contraste-hover) 15%);
   border-color: var(--borda);
@@ -119,36 +114,35 @@ h1 {
   padding-bottom: 8px;
 }
 
-/* Aba não selecionada: neutra, sem disputar atenção com o conteúdo. */
+/* Aba não selecionada: neutra, sem disputar atenção com o conteúdo */
 .abas button {
   padding: 8px 16px;
   border: none;
+  border-bottom: 2px solid transparent;
   background: transparent;
   color: var(--fg-suave);
   cursor: pointer;
   font-size: 1rem;
-  border-radius: 6px;
+  border-radius: 0; /* Zerei aqui pra borda inferior ficar 100% reta */
   font-weight: 500;
 }
 
-/* Aba selecionada: aqui sim entra a cor de destaque (accent), pra indicar
-   claramente "você está aqui" dentro da navegação. */
+/* Aba selecionada: cor de texto branca e borda inferior reta na cor accent */
 .abas button.ativo {
-  background: var(--accent);
-  color: var(--accent-fg);
+  background: transparent;
+  color: #ffffff;
+  border-bottom: 2px solid var(--accent);
 }
 
-/* As abas têm uma regra própria de hover que anula a regra genérica de
-   "button:hover" logo abaixo: nem a aba inativa nem a aba já selecionada
-   mudam de cor ao passar o mouse — só o clique (selecionar) altera o
-   destaque, o hover não. */
+/* Hover: cor da palavra levemente mais clara */
 .abas button:hover:not(:disabled) {
   background: transparent;
+  color: var(--fg);
   opacity: 1;
 }
 
 .abas button.ativo:hover:not(:disabled) {
-  background: var(--accent);
+  background: transparent;
   opacity: 1;
 }
 
@@ -160,13 +154,8 @@ h1 {
   align-items: stretch;
 }
 
-/* Todo campo do formulário (input de texto/número, ou o seletor customizado)
-   disputa o mesmo espaço disponível, com a mesma largura mínima. Isso é o
-   que estava faltando antes: cada elemento tinha uma largura "de fábrica"
-   diferente (o texto do navegador, o número, o select...), o que deixava
-   a fileira com cara de aleatória. Com flex-basis igual pra todos, eles
-   ficam alinhados numa única linha quando cabem, e quebram em colunas de
-   forma organizada quando o espaço aperta (ex: tela menor). */
+/* flex-basis igual entre todos os campos (inputs e seletor) pra alinhamento
+   consistente, quebra em colunas quando o espaço disponível aperta */
 .formulario input,
 .formulario .seletor {
   flex: 1 1 160px;
@@ -178,10 +167,7 @@ h1 {
   white-space: nowrap;
 }
 
-/* Inputs de texto/número: borda neutra em repouso. Só ganham a cor de
-   destaque quando o usuário está de fato interagindo (:focus), como uma
-   pista visual de "campo ativo", sem pintar a tela toda de azul o tempo
-   inteiro. */
+/* Borda neutra em repouso, destaque só em :focus */
 .formulario input {
   padding: 8px;
   border: 1px solid var(--borda);
@@ -196,12 +182,7 @@ h1 {
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 25%, transparent);
 }
 
-/* ============================================================================
-   SELETOR CUSTOMIZADO (substitui o <select> nativo)
-   Ver componente Seletor.tsx para o porquê de existir esse componente em
-   vez de usar <select> puro: o navegador não deixa estilizar a lista de
-   opções de um <select> nativo, então construímos a nossa própria.
-   ============================================================================ */
+/* SELETOR CUSTOMIZADO (substitui o <select> nativo, ver Seletor.tsx) */
 
 .seletor {
   position: relative;
@@ -225,12 +206,13 @@ h1 {
   font-family: inherit;
   text-align: left;
   cursor: pointer;
-  transition: border-color 0.15s ease, background-color 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
 }
 
-/* Trava o texto numa linha só (com "..." se não couber), pra o rótulo
-   escolhido (ex: um nome de pessoa comprido) nunca quebrar em duas linhas
-   e deixar essa caixa mais alta que as outras do formulário. */
+/* Trava o texto em uma linha (com ellipsis), evitando que rótulos longos
+   quebrem em duas linhas e alterem a altura da caixa */
 .seletor-botao span {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -242,9 +224,7 @@ h1 {
   border-color: var(--fg-suave);
 }
 
-/* Enquanto a lista está aberta, o botão se comporta como se estivesse em
-   foco (mesmo destaque de :focus dos inputs), dando feedback claro de
-   "isso está aberto agora". */
+/* Estado aberto usa o mesmo destaque visual do :focus dos inputs */
 .seletor-botao.aberto {
   border-color: var(--accent);
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 25%, transparent);
@@ -254,9 +234,8 @@ h1 {
   color: var(--fg-suave);
 }
 
-/* A lista flutua sobre o restante da página (por isso position: absolute +
-   z-index), com a mesma linguagem visual do resto do site: cantos
-   arredondados, fundo elevado, sombra suave. */
+/* Lista flutuante sobre o restante da página, com a mesma linguagem
+   visual do resto da UI (cantos arredondados, sombra suave) */
 .seletor-lista {
   position: absolute;
   top: calc(100% + 6px);
@@ -286,8 +265,7 @@ h1 {
   background: color-mix(in srgb, var(--accent) 12%, transparent);
 }
 
-/* Opção atualmente selecionada: usa a cor de destaque, mesma lógica da aba
-   ativa — "isto é o que está marcado agora". */
+/* Opção selecionada usa a cor de destaque, mesma lógica da aba ativa */
 .seletor-opcao.selecionada {
   background: var(--accent);
   color: var(--accent-fg);
@@ -307,9 +285,7 @@ h1 {
   background: transparent;
 }
 
-/* Botão de ação principal (Adicionar pessoa / Adicionar transação):
-   usa a cor de destaque, porque é literalmente a ação mais importante
-   de cada tela. */
+/* Botão de ação principal (Adicionar): cor de destaque */
 button {
   padding: 8px 12px;
   border-radius: 6px;
@@ -328,10 +304,8 @@ button:disabled {
   cursor: not-allowed;
 }
 
-/* Botões destrutivos (Remover pessoa / Remover transação): usam a cor de
-   despesa (vermelho) em vez do accent. Faz sentido tanto visualmente
-   (vermelho = "cuidado, ação irreversível") quanto semanticamente
-   (é a mesma cor que já associamos a "saída de dinheiro/perda"). */
+/* Botões destrutivos (Remover): cor de despesa em vez de accent, mantendo
+   coerência semântica com o restante da paleta */
 button.perigo {
   background: transparent;
   border: 1px solid var(--despesa);
@@ -353,7 +327,8 @@ table {
   overflow: hidden;
 }
 
-th, td {
+th,
+td {
   text-align: left;
   padding: 10px;
   border-bottom: 1px solid var(--borda);
@@ -367,9 +342,8 @@ th {
   letter-spacing: 0.03em;
 }
 
-/* Valores financeiros: aqui é onde verde/vermelho realmente importa,
-   porque o usuário precisa identificar receita x despesa x saldo
-   num piscar de olhos, sem precisar ler o número com atenção. */
+/* Valores financeiros: verde/vermelho pra identificação rápida de
+   receita x despesa x saldo */
 .valor-receita {
   color: var(--receita);
   font-weight: 600;
@@ -419,9 +393,7 @@ tfoot td {
   font-weight: 600;
 }
 
-/* ============================================================================
-   GRÁFICO DE PIZZA (Panorama geral, no fim da tela de Totais)
-   ============================================================================ */
+/* GRÁFICO DE PIZZA (Panorama geral, no fim da tela de Totais) */
 
 .grafico-secao {
   margin-top: 32px;
@@ -449,9 +421,8 @@ tfoot td {
   flex-shrink: 0;
 }
 
-/* O "buraco" do donut: um círculo menor por cima, na cor de fundo, criando
-   o efeito de rosquinha em vez de uma pizza cheia — e sobra espaço pra
-   mostrar o saldo geral no centro. */
+/* Círculo interno na cor de fundo, criando o efeito donut e reservando
+   espaço para exibir o saldo geral no centro. */
 .grafico-pizza-centro {
   position: absolute;
   inset: 22px;

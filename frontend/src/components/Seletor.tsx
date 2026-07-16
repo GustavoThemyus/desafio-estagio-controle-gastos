@@ -12,28 +12,14 @@ interface SeletorProps {
   placeholder?: string;
 }
 
-/**
- * Dropdown customizado, feito do zero em React, pra substituir o <select>
- * nativo do navegador.
- *
- * Por que não dava pra só estilizar o <select> com CSS?
- * O <select> nativo tem duas partes: a caixinha fechada (essa dá pra
- * estilizar bem com `appearance: none` + CSS) e a LISTA que abre quando
- * você clica nela. Essa lista é desenhada pelo sistema operacional, não
- * pelo navegador — o CSS simplesmente não tem acesso a ela. É por isso que,
- * mesmo estilizando a caixinha, a lista continuava com a "cara de HTML"
- * (ou pior, cara do sistema operacional). A única forma de controlar 100%
- * a aparência é não usar o elemento <select> de verdade, e sim montar a
- * nossa própria versão com HTML comum (um botão + uma lista) — que é
- * exatamente o que este componente faz.
- */
+/* Dropdown customizado, substituindo o <select> nativo */
 export function Seletor({ valor, opcoes, aoMudar, placeholder }: SeletorProps) {
   const [aberto, setAberto] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const opcaoSelecionada = opcoes.find((o) => o.valor === valor);
 
-  // Fecha o dropdown se o usuário clicar em qualquer lugar fora dele.
+  // Fecha o dropdown se o usuário clicar em qualquer lugar fora dele
   useEffect(() => {
     function aoClicarFora(event: MouseEvent) {
       if (

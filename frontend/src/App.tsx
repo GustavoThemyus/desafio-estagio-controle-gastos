@@ -9,10 +9,8 @@ type Tema = "light" | "dark";
 const CHAVE_TEMA_SALVO = "controle-gastos:tema";
 
 /**
- * Descobre o tema inicial, na seguinte ordem de prioridade:
- * 1. O que o usuário escolheu antes (salvo no localStorage do navegador)
- * 2. A preferência do sistema operacional (claro/escuro)
- * 3. Claro, como padrão de segurança
+ * Tema inicial, em ordem de prioridade: preferência salva > preferência do
+ * sistema operacional > claro (padrão)
  */
 function temaInicial(): Tema {
   const salvo = localStorage.getItem(CHAVE_TEMA_SALVO);
@@ -20,25 +18,20 @@ function temaInicial(): Tema {
     return salvo;
   }
 
-  const prefereEscuro = window.matchMedia(
-    "(prefers-color-scheme: dark)",
-  ).matches;
+  const prefereEscuro = window.matchMedia("(prefers-color-scheme: dark)").matches;
   return prefereEscuro ? "dark" : "light";
 }
 
 /**
- * Componente raiz da aplicação.
- * Não usei nenhuma biblioteca de rotas (como react-router) de propósito:
- * como o app só tem 3 telas simples, um estado local controlando qual aba
- * está ativa já resolve, sem adicionar complexidade desnecessária.
+ * Componente raiz. Navegação por abas com estado local em vez de uma
+ * biblioteca de rotas, suficiente para as 3 telas do sistema
  */
 function App() {
   const [aba, setAba] = useState<Aba>("pessoas");
   const [tema, setTema] = useState<Tema>(temaInicial);
 
-  // Sempre que o tema mudar, aplica o atributo data-theme no <html>
-  // (é isso que o index.css usa para trocar as variáveis de cor)
-  // e salva a escolha para lembrar na próxima visita.
+  // Aplica o tema via atributo data-theme (usado pelas variáveis CSS)
+  // e persiste a escolha para a próxima visita.
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", tema);
     localStorage.setItem(CHAVE_TEMA_SALVO, tema);
@@ -53,7 +46,7 @@ function App() {
       <div className="cabecalho">
         <h1>Controle de Gastos Residenciais</h1>
         <button className="botao-tema" onClick={alternarTema}>
-          {tema === "light" ? "Modo escuro" : "Modo claro"}
+          {tema === "light" ? "🌙 Modo escuro" : "☀️ Modo claro"}
         </button>
       </div>
 

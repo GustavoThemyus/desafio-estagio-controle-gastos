@@ -5,7 +5,7 @@ import type { Pessoa, Transacao, TipoTransacao } from "../types";
 import { formatarMoeda } from "../types";
 
 /**
- * Tela de cadastro de transações.
+ * Tela de cadastro de transações
  * Regras importantes que o back-end aplica (e aqui só refletimos na interface):
  *  - a pessoa escolhida precisa existir (por isso o select só mostra pessoas já cadastradas)
  *  - se a pessoa for menor de idade, só pode lançar "Despesa"
@@ -36,9 +36,8 @@ export function TransacoesPage() {
 
   const pessoaSelecionada = pessoas.find((p) => p.id === pessoaId);
 
-  // Se a pessoa escolhida no formulário for menor de idade e o usuário tiver
-  // selecionado "Receita", forçamos de volta para "Despesa" na própria tela,
-  // pra dar feedback imediato antes mesmo de tentar salvar no back-end.
+  // Feedback imediato na UI: se a pessoa selecionada for menor de idade e o
+  // tipo estava em "Receita", força "Despesa" antes mesmo do envio ao back-end
   useEffect(() => {
     if (pessoaSelecionada?.ehMenorDeIdade && tipo === "Receita") {
       setTipo("Despesa");
@@ -108,7 +107,7 @@ export function TransacoesPage() {
           aoMudar={(v) => setTipo(v as TipoTransacao)}
           opcoes={[
             { valor: "Despesa", rotulo: "Despesa" },
-            // Se a pessoa selecionada for menor de idade, nem mostramos a opção "Receita"
+            // Oculta "Receita" quando a pessoa selecionada é menor de idade
             ...(!pessoaSelecionada?.ehMenorDeIdade
               ? [{ valor: "Receita", rotulo: "Receita" }]
               : []),

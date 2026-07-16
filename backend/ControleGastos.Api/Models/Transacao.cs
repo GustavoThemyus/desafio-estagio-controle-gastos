@@ -3,10 +3,8 @@ using System.Text.Json.Serialization;
 namespace ControleGastos.Api.Models;
 
 /// <summary>
-/// Tipo de uma transação financeira.
-/// Usamos um enum (em vez de aceitar qualquer texto) para que o próprio C#
-/// garanta que só existem esses dois valores possíveis, evitando erros de digitação
-/// como "despeza" ou "Receita " com espaço.
+/// Tipo de uma transação financeira. Representado como enum (não string livre)
+/// para garantir em tempo de compilação que só existem esses dois valores.
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum TipoTransacao

@@ -5,7 +5,7 @@ import type { Pessoa } from "../types";
 /**
  * Tela de cadastro de pessoas.
  * Responsabilidades:
- *  - Listar as pessoas já cadastradas
+ *  - Lista as pessoas já cadastradas
  *  - Criar uma nova pessoa (nome + idade)
  *  - Remover uma pessoa (o back-end já cuida de apagar as transações dela junto)
  */
@@ -21,13 +21,13 @@ export function PessoasPage() {
     setPessoas(lista);
   }
 
-  // Ao montar o componente pela primeira vez, busca a lista atual no back-end.
+  // Carrega a lista ao montar o componente
   useEffect(() => {
     carregarPessoas().catch((e) => setErro(e.message));
   }, []);
 
   async function handleCriar(event: React.FormEvent) {
-    event.preventDefault(); // evita que o navegador recarregue a página ao enviar o form
+    event.preventDefault(); // previne reload da página no submit
     setErro(null);
 
     if (!nome.trim() || idade === "") {
@@ -50,7 +50,7 @@ export function PessoasPage() {
 
   async function handleRemover(id: string, nome: string) {
     const confirmou = window.confirm(
-      `Remover ${nome}? Todas as transações dessa pessoa também serão apagadas. Essa ação não pode ser desfeita.`
+      `Remover ${nome}? Todas as transações dessa pessoa também serão apagadas. Essa ação não pode ser desfeita.`,
     );
     if (!confirmou) return;
 
@@ -104,7 +104,10 @@ export function PessoasPage() {
               <td>{pessoa.idade}</td>
               <td>{pessoa.ehMenorDeIdade ? "Sim" : "Não"}</td>
               <td>
-                <button className="perigo" onClick={() => handleRemover(pessoa.id, pessoa.nome)}>
+                <button
+                  className="perigo"
+                  onClick={() => handleRemover(pessoa.id, pessoa.nome)}
+                >
                   Remover
                 </button>
               </td>

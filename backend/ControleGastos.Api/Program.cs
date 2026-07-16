@@ -4,12 +4,11 @@ using ControleGastos.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// DataStore como Singleton: uma instância única, compartilhada por todas as
-// requisições, que mantém os dados em memória e os sincroniza com o arquivo JSON.
+// DataStore como Singleton: instância única compartilhada entre requisições,
+// responsável por manter o estado em memória sincronizado com o arquivo JSON.
 builder.Services.AddSingleton<DataStore>();
 
-// CORS: libera o front-end (que roda em outra porta, ex: http://localhost:5173)
-// para poder chamar esta API. Sem isso, o navegador bloqueia a requisição.
+// CORS liberado para o front-end, que roda em porta diferente (Vite: 5173).
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
@@ -34,7 +33,7 @@ app.MapGet("/pessoas", (DataStore db) =>
 // POST /pessoas -> cria uma nova pessoa
 app.MapPost("/pessoas", (CriarPessoaRequest request, DataStore db) =>
 {
-    // Validações simples de entrada. Uma API robusta nunca confia no que chega do front-end.
+    // Validação de entrada — a API não confia em dados vindos do cliente.
     if (string.IsNullOrWhiteSpace(request.Nome))
     {
         return Results.BadRequest(new ErroResponse("O nome da pessoa é obrigatório."));

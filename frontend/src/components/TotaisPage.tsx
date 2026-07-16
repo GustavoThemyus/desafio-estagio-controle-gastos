@@ -6,8 +6,8 @@ import { formatarMoeda } from "../types";
 
 /**
  * Tela de consulta de totais: mostra receitas, despesas e saldo de cada pessoa,
- * e no final o total geral somando todo mundo.
- * Todo o cálculo é feito no back-end (endpoint GET /totais); aqui só exibimos.
+ * e no final o total geral somando todo mundo
+ * Todo o cálculo é feito no back-end (endpoint GET /totais); aqui só exibe
  */
 export function TotaisPage() {
   const [totais, setTotais] = useState<TotaisGerais | null>(null);
@@ -40,9 +40,15 @@ export function TotaisPage() {
           {totais.pessoas.map((p) => (
             <tr key={p.pessoaId}>
               <td>{p.nome}</td>
-              <td className="valor-receita">{formatarMoeda(p.totalReceitas)}</td>
-              <td className="valor-despesa">{formatarMoeda(p.totalDespesas)}</td>
-              <td className={p.saldo >= 0 ? "saldo-positivo" : "saldo-negativo"}>
+              <td className="valor-receita">
+                {formatarMoeda(p.totalReceitas)}
+              </td>
+              <td className="valor-despesa">
+                {formatarMoeda(p.totalDespesas)}
+              </td>
+              <td
+                className={p.saldo >= 0 ? "saldo-positivo" : "saldo-negativo"}
+              >
                 {formatarMoeda(p.saldo)}
               </td>
             </tr>
@@ -64,7 +70,11 @@ export function TotaisPage() {
             <td className="valor-despesa">
               <strong>{formatarMoeda(totais.totalDespesasGeral)}</strong>
             </td>
-            <td className={totais.saldoGeral >= 0 ? "saldo-positivo" : "saldo-negativo"}>
+            <td
+              className={
+                totais.saldoGeral >= 0 ? "saldo-positivo" : "saldo-negativo"
+              }
+            >
               <strong>{formatarMoeda(totais.saldoGeral)}</strong>
             </td>
           </tr>

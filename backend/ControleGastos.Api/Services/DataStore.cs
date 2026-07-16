@@ -13,18 +13,14 @@ public class BancoDeDados
 }
 
 /// <summary>
-/// DataStore é o "banco de dados" da aplicação.
+/// Camada de persistência da aplicação. Como o desafio exige persistência mas
+/// não um SGBD específico, os dados são mantidos em um arquivo JSON em disco
+/// (data/dados.json) — sem dependências externas de infraestrutura. A lógica
+/// fica isolada nesta classe, então trocar por um banco relacional no futuro
+/// não exigiria mudanças nos endpoints.
 ///
-/// Como o desafio pede persistência (os dados não podem sumir quando a aplicação
-/// é fechada), mas não exige um banco de dados de verdade (tipo SQL Server/Postgres),
-/// optei por uma solução simples e transparente: guardar tudo em um arquivo JSON
-/// no disco (data/dados.json). Isso cumpre o requisito de persistência sem
-/// precisar de infraestrutura extra (instalar banco, connection string, etc.),
-/// o que deixa o projeto fácil de rodar em qualquer máquina.
-///
-/// Esta classe é registrada como Singleton (uma única instância viva enquanto
-/// a API estiver rodando) e usa um "lock" para evitar que duas requisições
-/// mexam nos dados ao mesmo tempo e corrompam o arquivo.
+/// Registrada como Singleton (instância única durante a vida da aplicação),
+/// com lock para evitar condições de corrida entre requisições concorrentes.
 /// </summary>
 public class DataStore
 {
@@ -71,8 +67,7 @@ public class DataStore
     {
         lock (_lock)
         {
-            // Retorna uma cópia da lista para quem chamar não conseguir alterar
-            // a lista interna diretamente sem passar pelos métodos do DataStore.
+            // Retorna cópia da lista para evitar mutação externa do estado interno.
             return _dados.Pessoas.ToList();
         }
     }
@@ -102,9 +97,8 @@ public class DataStore
     }
 
     /// <summary>
-    /// Remove a pessoa e, seguindo a regra do desafio, também remove em cascata
-    /// todas as transações que pertencem a ela.
-    /// Retorna false se a pessoa não existir (para o endpoint decidir devolver 404).
+    /// Remove a pessoa e, em cascata, todas as transações associadas a ela.
+    /// Retorna false se a pessoa não existir (endpoint responde 404).
     /// </summary>
     public bool RemoverPessoa(Guid id)
     {
@@ -154,12 +148,9 @@ public class DataStore
     }
 
     /// <summary>
-    /// Remove uma transação específica pelo Id.
-    /// Observação: o desafio original só pedia criação e listagem de transações
-    /// ("não é necessário implementar edição/deleção"), mas remover uma transação
-    /// não fere nenhuma regra de negócio existente, então foi adicionado como
-    /// funcionalidade extra. Retorna false se a transação não existir, para o
-    /// endpoint devolver 404.
+    /// Remove uma transação pelo Id. Funcionalidade adicional além do mínimo
+    /// exigido no desafio (que pedia apenas criação e listagem). Retorna false
+    /// se a transação não existir (endpoint responde 404).
     /// </summary>
     public bool RemoverTransacao(Guid id)
     {

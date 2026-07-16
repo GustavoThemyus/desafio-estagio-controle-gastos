@@ -1,7 +1,4 @@
-// Estes tipos espelham exatamente os DTOs/Models do back-end em C#.
-// Manter os dois lados "sincronizados" evita bugs de "o campo não existe"
-// ou "o campo tem outro nome" na hora de ler a resposta da API.
-
+// Tipos espelham os DTOs/Models do back-end (C#), mantendo o contrato da API consistente entre os dois lados
 export type TipoTransacao = "Receita" | "Despesa";
 
 export interface Pessoa {
@@ -39,10 +36,8 @@ export interface ErroResponse {
 }
 
 /**
- * Formata um número como moeda brasileira (ex: 1234.5 -> "R$ 1.234,50").
- * Usar Intl.NumberFormat em vez de `R$ ${valor.toFixed(2)}` evita bugs sutis
- * (separador de milhar, vírgula decimal) e é o jeito nativo do navegador
- * de lidar com formatação regional, sem precisar de nenhuma biblioteca.
+ * Formata valores como moeda brasileira (ex: 1234.5 pra "R$ 1.234,50")
+ * usando Intl.NumberFormat, evitando implementação manual de separadores
  */
 const formatadorMoeda = new Intl.NumberFormat("pt-BR", {
   style: "currency",
