@@ -5,9 +5,8 @@ Projeto do desafio técnico: back-end em .NET/C# + front-end em React/TypeScript
 ## Estrutura
 
 ```
-desafio-estagio/
-├── backend/ControleGastos.Api/   -> API em C# (.NET 8)
-└── frontend/                     -> App em React + TypeScript (Vite)
+backend/ControleGastos.Api/   = API em C# (.NET 8)
+frontend/                     = App em React + TypeScript (Vite)
 ```
 
 ## Como rodar
@@ -20,8 +19,8 @@ dotnet run
 ```
 
 A API sobe em `http://localhost:5000`. Na primeira execução, ela cria uma pasta
-`data/` com um arquivo `dados.json` — é ali que os dados ficam salvos entre uma
-execução e outra (é o "banco de dados" deste projeto).
+`data/` com um arquivo `dados.json`, é ali que os dados ficam salvos entre uma
+execução e outra (é o "banco de dados" desse projeto)
 
 ### 2. Front-end
 
@@ -39,10 +38,8 @@ API em `http://localhost:5000` (veja `frontend/src/api.ts`).
 ## Por que arquivo JSON em vez de um banco de dados
 
 O desafio pede persistência, mas não exige um banco relacional. Um arquivo
-JSON (`backend/ControleGastos.Api/data/dados.json`) resolve isso sem precisar
-instalar/configurar nada além do SDK do .NET. A lógica fica isolada em
-`Services/DataStore.cs`, então trocar por um banco de verdade depois (ex:
-SQLite) não afetaria o resto do código.
+JSON resolve isso sem precisar instalar/configurar nada além do SDK do .NET. A lógica fica isolada em
+`Services/DataStore.cs`, então trocar por um banco de verdade depois não afetaria o resto do código.
 
 ## Onde está cada regra de negócio
 
