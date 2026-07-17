@@ -62,10 +62,3 @@ JSON resolve isso sem precisar instalar/configurar nada além do SDK do .NET. A 
 | POST | `/transacoes` | Cria uma transação (`{ descricao, valor, tipo, pessoaId }`) |
 | DELETE | `/transacoes/{id}` | Remove uma transação (funcionalidade extra, não exigida pelo desafio) |
 | GET | `/totais` | Totais de receita/despesa/saldo por pessoa + total geral |
-
-## Tema (claro/escuro)
-
-O front-end tem um botão que alterna entre modo claro e escuro (fica salvo
-no navegador). As cores ficam em variáveis CSS (`frontend/src/index.css`):
-azul pra ações principais, verde/vermelho pra receita/despesa e saldo, e
-cores neutras pro resto — pra não competir visualmente com os números.
