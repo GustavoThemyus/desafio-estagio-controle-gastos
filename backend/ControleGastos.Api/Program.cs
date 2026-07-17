@@ -4,11 +4,10 @@ using ControleGastos.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// DataStore como Singleton: instância única compartilhada entre requisições,
-// responsável por manter o estado em memória sincronizado com o arquivo JSON.
+// Singleton pra todas as requisições compartilharem o mesmo estado e o mesmo arquivo JSON
 builder.Services.AddSingleton<DataStore>();
 
-// CORS liberado para o front-end, que roda em porta diferente (Vite: 5173).
+// CORS liberado pro front-end, que roda em outra porta (Vite: 5173)
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
@@ -20,20 +19,14 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 app.UseCors();
 
-// ============================================================================
-// ENDPOINTS DE PESSOAS
-// ============================================================================
-
-// GET /pessoas -> lista todas as pessoas cadastradas
 app.MapGet("/pessoas", (DataStore db) =>
 {
     return Results.Ok(db.ListarPessoas());
 });
 
-// POST /pessoas -> cria uma nova pessoa
 app.MapPost("/pessoas", (CriarPessoaRequest request, DataStore db) =>
 {
-    // Validação de entrada — a API não confia em dados vindos do cliente.
+    // Valida a entrada, a API não confia no que vem do cliente
     if (string.IsNullOrWhiteSpace(request.Nome))
     {
         return Results.BadRequest(new ErroResponse("O nome da pessoa é obrigatório."));
@@ -48,7 +41,6 @@ app.MapPost("/pessoas", (CriarPessoaRequest request, DataStore db) =>
     return Results.Created($"/pessoas/{pessoa.Id}", pessoa);
 });
 
-// DELETE /pessoas/{id} -> remove a pessoa e, em cascata, todas as suas transações
 app.MapDelete("/pessoas/{id:guid}", (Guid id, DataStore db) =>
 {
     var removeu = db.RemoverPessoa(id);
@@ -60,17 +52,11 @@ app.MapDelete("/pessoas/{id:guid}", (Guid id, DataStore db) =>
     return Results.NoContent();
 });
 
-// ============================================================================
-// ENDPOINTS DE TRANSAÇÕES
-// ============================================================================
-
-// GET /transacoes -> lista todas as transações cadastradas
 app.MapGet("/transacoes", (DataStore db) =>
 {
     return Results.Ok(db.ListarTransacoes());
 });
 
-// POST /transacoes -> cria uma nova transação
 app.MapPost("/transacoes", (CriarTransacaoRequest request, DataStore db) =>
 {
     if (string.IsNullOrWhiteSpace(request.Descricao))
@@ -83,14 +69,14 @@ app.MapPost("/transacoes", (CriarTransacaoRequest request, DataStore db) =>
         return Results.BadRequest(new ErroResponse("O valor da transação deve ser maior que zero."));
     }
 
-    // Regra: a pessoa informada precisa existir no cadastro de pessoas.
+    // Regra: a pessoa precisa existir no cadastro
     var pessoa = db.BuscarPessoa(request.PessoaId);
     if (pessoa is null)
     {
         return Results.BadRequest(new ErroResponse("A pessoa informada não existe. Cadastre a pessoa antes de lançar a transação."));
     }
 
-    // Regra central do desafio: pessoa menor de idade (< 18 anos) só pode ter DESPESAS.
+    // Regra do desafio: menor de idade (< 18) só pode ter Despesa
     if (pessoa.EhMenorDeIdade && request.Tipo == TipoTransacao.Receita)
     {
         return Results.BadRequest(new ErroResponse(
@@ -101,8 +87,7 @@ app.MapPost("/transacoes", (CriarTransacaoRequest request, DataStore db) =>
     return Results.Created($"/transacoes/{transacao.Id}", transacao);
 });
 
-// DELETE /transacoes/{id} -> remove uma transação específica
-// (funcionalidade extra, além do mínimo pedido no desafio)
+// Extra, o desafio não pedia deletar transação
 app.MapDelete("/transacoes/{id:guid}", (Guid id, DataStore db) =>
 {
     var removeu = db.RemoverTransacao(id);
@@ -114,12 +99,6 @@ app.MapDelete("/transacoes/{id:guid}", (Guid id, DataStore db) =>
     return Results.NoContent();
 });
 
-// ============================================================================
-// ENDPOINT DE TOTAIS
-// ============================================================================
-
-// GET /totais -> para cada pessoa, soma receitas, despesas e calcula o saldo.
-// No final, soma tudo de novo para dar o total geral do sistema.
 app.MapGet("/totais", (DataStore db) =>
 {
     var pessoas = db.ListarPessoas();

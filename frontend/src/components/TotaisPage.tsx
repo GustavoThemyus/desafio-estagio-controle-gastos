@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { api } from "../api";
 import { GraficoPizza } from "./GraficoPizza";
+import { GraficoBarras } from "./GraficoBarras";
 import type { TotaisGerais } from "../types";
 import { formatarMoeda } from "../types";
 
@@ -81,10 +82,13 @@ export function TotaisPage() {
         </tfoot>
       </table>
 
-      <GraficoPizza
-        totalReceitas={totais.totalReceitasGeral}
-        totalDespesas={totais.totalDespesasGeral}
-      />
+      <div className="graficos-container">
+        <GraficoPizza
+          totalReceitas={totais.totalReceitasGeral}
+          totalDespesas={totais.totalDespesasGeral}
+        />
+        <GraficoBarras pessoas={totais.pessoas} />
+      </div>
     </section>
   );
 }

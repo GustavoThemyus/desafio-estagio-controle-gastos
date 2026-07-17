@@ -3,25 +3,17 @@ using ControleGastos.Api.Models;
 
 namespace ControleGastos.Api.Services;
 
-/// <summary>
-/// Estrutura do arquivo JSON salvo em disco: só as duas listas que o sistema precisa guardar.
-/// </summary>
+// Espelha o formato do JSON em disco: só as duas listas
 public class BancoDeDados
 {
     public List<Pessoa> Pessoas { get; set; } = new();
     public List<Transacao> Transacoes { get; set; } = new();
 }
 
-/// <summary>
-/// Camada de persistência da aplicação. Como o desafio exige persistência mas
-/// não um SGBD específico, os dados são mantidos em um arquivo JSON em disco
-/// (data/dados.json) — sem dependências externas de infraestrutura. A lógica
-/// fica isolada nesta classe, então trocar por um banco relacional no futuro
-/// não exigiria mudanças nos endpoints.
-///
-/// Registrada como Singleton (instância única durante a vida da aplicação),
-/// com lock para evitar condições de corrida entre requisições concorrentes.
-/// </summary>
+// Persisto em arquivo JSON porque o desafio pede persistência mas não um banco
+// específico, então não quis depender de um SGBD. Deixei isolado aqui pra trocar
+// por um banco depois sem mexer nos endpoints. Singleton com lock por causa das
+// requisições concorrentes
 public class DataStore
 {
     private readonly string _caminhoArquivo;
@@ -52,22 +44,17 @@ public class DataStore
         return JsonSerializer.Deserialize<BancoDeDados>(json) ?? new BancoDeDados();
     }
 
-    /// <summary>Salva o estado atual em memória de volta no arquivo JSON.</summary>
     private void SalvarNoDisco()
     {
         var json = JsonSerializer.Serialize(_dados, new JsonSerializerOptions { WriteIndented = true });
         File.WriteAllText(_caminhoArquivo, json);
     }
 
-    // ------------------------------------------------------------------
-    // PESSOAS
-    // ------------------------------------------------------------------
-
     public List<Pessoa> ListarPessoas()
     {
         lock (_lock)
         {
-            // Retorna cópia da lista para evitar mutação externa do estado interno.
+            // devolve cópia pra ninguém mutar o estado interno de fora
             return _dados.Pessoas.ToList();
         }
     }
@@ -96,10 +83,7 @@ public class DataStore
         }
     }
 
-    /// <summary>
-    /// Remove a pessoa e, em cascata, todas as transações associadas a ela.
-    /// Retorna false se a pessoa não existir (endpoint responde 404).
-    /// </summary>
+    // Remove a pessoa e as transações dela em cascata, false se não existir (vira 404)
     public bool RemoverPessoa(Guid id)
     {
         lock (_lock)
@@ -116,10 +100,6 @@ public class DataStore
             return true;
         }
     }
-
-    // ------------------------------------------------------------------
-    // TRANSAÇÕES
-    // ------------------------------------------------------------------
 
     public List<Transacao> ListarTransacoes()
     {
@@ -147,11 +127,7 @@ public class DataStore
         }
     }
 
-    /// <summary>
-    /// Remove uma transação pelo Id. Funcionalidade adicional além do mínimo
-    /// exigido no desafio (que pedia apenas criação e listagem). Retorna false
-    /// se a transação não existir (endpoint responde 404).
-    /// </summary>
+    // Remove uma transação, extra que o desafio não pedia, false se não existir (vira 404)
     public bool RemoverTransacao(Guid id)
     {
         lock (_lock)

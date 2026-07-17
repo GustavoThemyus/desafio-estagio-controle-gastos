@@ -127,10 +127,10 @@ h1 {
   font-weight: 500;
 }
 
-/* Aba selecionada: cor de texto branca e borda inferior reta na cor accent */
+/* Aba selecionada: cor do texto igual ao --fg (inverte conforme o fundo) e borda inferior reta na cor accent */
 .abas button.ativo {
   background: transparent;
-  color: #ffffff;
+  color: var(--fg);
   border-bottom: 2px solid var(--accent);
 }
 
@@ -473,4 +473,112 @@ tfoot td {
 
 .grafico-legenda-cor.despesa {
   background: var(--despesa);
+}
+
+/* GRÁFICO DE BARRAS (Ranking por pessoa, ao lado do gráfico de pizza) */
+
+.graficos-container {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: stretch;
+}
+
+/* Coluna do gráfico ocupa toda a altura disponível pra que os dois cards
+   (pizza e barras) fiquem do mesmo tamanho, graças ao align-items: stretch */
+.graficos-container > .grafico-secao {
+  flex: 1 1 300px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.graficos-container .grafico-pizza,
+.grafico-barras {
+  flex: 1;
+}
+
+.grafico-barras {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  background: var(--bg-elevado);
+  border-radius: 8px;
+}
+
+/* Área das barras: linha de grupos alinhados pela base, bem espaçados */
+.grafico-barras-plot {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-evenly;
+  gap: 24px;
+}
+
+.grafico-barras-grupo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+/* Valores empilhados acima das barras; a altura menor das colunas abaixo
+   compensa esse espaço, mantendo o card do mesmo tamanho */
+.grafico-barras-valores {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  font-size: 0.72rem;
+  line-height: 1.25;
+}
+
+/* Altura fixa serve de referência para o height percentual de cada coluna */
+.grafico-barras-colunas {
+  height: 130px;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.grafico-barras-coluna {
+  width: 26px;
+  min-height: 2px;
+  border-radius: 4px 4px 0 0;
+}
+
+.grafico-barras-coluna.receita {
+  background: var(--receita);
+}
+
+.grafico-barras-coluna.despesa {
+  background: var(--despesa);
+}
+
+.grafico-barras-nome {
+  max-width: 100%;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.grafico-barras-legenda {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  font-size: 0.9rem;
+}
+
+.grafico-barras-legenda li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }

@@ -18,7 +18,9 @@ function temaInicial(): Tema {
     return salvo;
   }
 
-  const prefereEscuro = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const prefereEscuro = window.matchMedia(
+    "(prefers-color-scheme: dark)",
+  ).matches;
   return prefereEscuro ? "dark" : "light";
 }
 
@@ -46,7 +48,7 @@ function App() {
       <div className="cabecalho">
         <h1>Controle de Gastos Residenciais</h1>
         <button className="botao-tema" onClick={alternarTema}>
-          {tema === "light" ? "🌙 Modo escuro" : "☀️ Modo claro"}
+          {tema === "light" ? "Modo escuro" : "Modo claro"}
         </button>
       </div>
 
