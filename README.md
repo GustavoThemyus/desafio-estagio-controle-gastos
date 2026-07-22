@@ -33,7 +33,7 @@ npm run dev
 Abre em `http://localhost:5173`. Ele já está configurado para conversar com a
 API em `http://localhost:5000` (veja `frontend/src/api.ts`).
 
-Importante: rode o back-end e o front-end **ao mesmo tempo**, em dois terminais.
+Importante: rode o back-end e o front-end ao mesmo tempo, em dois terminais.
 
 ## Por que arquivo JSON em vez de um banco de dados
 
